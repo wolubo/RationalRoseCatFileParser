@@ -1,0 +1,15 @@
+
+(object Petal
+    version    	50
+    _written   	"Rose 2006.0.911.0919"
+    charSet    	0)
+
+(object Class_Category "ExternalPackage"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"55477FAA017E"
+    exportControl 	"Public"
+    logical_models 	(list unit_reference_list
+	(object Class "TestClassC"
+	    quid       	"55477FBA01BE"))
+    logical_presentations 	(list unit_reference_list))

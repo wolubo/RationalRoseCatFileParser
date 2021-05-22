@@ -1,0 +1,3376 @@
+ /* JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  JDK_VERSION = "1.5";
+  IGNORE_CASE = true;
+  static = false;
+//  LOOKAHEAD=3;
+//  DEBUG_PARSER=true;
+//  DEBUG_LOOKAHEAD=true;
+//  FORCE_LA_CHECK=true;
+  JAVA_UNICODE_ESCAPE = true;
+  UNICODE_INPUT = true;
+}
+
+PARSER_BEGIN(RoseParser)
+
+package de.wbongartz.rr_catfile_parser.parser;
+
+import java.io.*;
+import java.util.*;
+import java.util.ArrayList;
+import java.util.logging.*;
+import de.wbongartz.rr_catfile_parser.utils.*;
+import de.wbongartz.rr_catfile_parser.rose_model.*;
+
+
+public class RoseParser implements Runnable
+{
+  public static ArrayList<Thread> myThreads = new ArrayList<Thread>();
+
+  private Object _modelNode;
+
+  private Logger log = Logger.getLogger( RoseParser.class.getName() );	
+
+  private ConfigManager configManager;
+  private PathMap pathMap;
+  private String file2parse;
+  
+  public RoseParser(File theFile2parse, ConfigManager theConfigManager) throws FileNotFoundException, IOException
+  {
+   	this(new FileInputStream(theFile2parse));
+   	file2parse = theFile2parse.getCanonicalPath();
+   	configManager = theConfigManager;
+    pathMap = configManager.getPathMap();
+  }
+
+  public void run( )
+  {
+    log.info("Loading " + file2parse);
+    try
+    {
+   		_modelNode = this.rose_file();
+	 	log.info("Loading " + file2parse + " finished");
+    }
+    catch(Exception ex)
+    {
+    	log.severe(file2parse + ": " +ex);
+//    	log.severe(file2parse + ": " +ex.getMessage());
+    }
+  }
+
+  public Object getModelNode()
+  {
+	return _modelNode;
+  }
+}
+
+PARSER_END(RoseParser)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN : 
+{
+  < OBJECT : "object" >
+| < LIST : "list" >
+}
+
+TOKEN : 
+{
+ < PETAL : "Petal" >
+| < PARAMETERIZED_CLASS : "Parameterized_Class" >
+| < INSTANTIATED_CLASS : "instantiated_class" >
+| < DESIGN : "Design" >
+| < STATIC : "static" >
+| < DERIVED : "derived" >
+| < PRE_CONDITION : "pre_condition" >
+| < POST_CONDITION : "post_condition" >
+| < ATTRIBUTE : "Attribute" >
+| < DATAFLOWVIEW : "dataFlowView" >
+| < DEFAULTS : "defaults" >
+| < FONT : "Font" >
+| < CLASS_CATEGORY : "Class_Category" >
+| < CATEGORY : "category" >
+| < EXTERNAL_DOC : "external_doc" >
+| < EXTERNAL_DOCS : "external_docs" >
+| < EXTERNAL_DOC_LIST : "external_doc_list" >
+| < EXTERNAL_DOC_PATH : "external_doc_path" >
+| < EXTERNAL_DOC_URL : "external_doc_url" >
+| < USECASEDIAGRAM : "UseCaseDiagram" >
+| < NOTEVIEW : "NoteView" >
+| < ATTACHVIEW : "AttachView" >
+| < MODULE_VISIBILITY_RELATIONSHIP : "module_visibility_relationship" >
+| < PHYSICAL_PRESENTATIONS : "physical_presentations" >
+| < MODULE_DIAGRAM : "Module_Diagram" >
+| < SUPPLIER_IS_SUBSYSTEM : "supplier_is_subsystem" >
+| < ASSOCATTACHVIEW : "AssocAttachView" >
+| < PHYSICAL_MODELS : "physical_models" >
+| < ASSOCIATION : "association" >
+| < DIAGRAM_REF : "diagram_ref" >
+| < ITEMLABEL : "ItemLabel" >
+| < CLASS : "Class" >
+|  < USECASE : "UseCase" >
+| < SEMANTICS : "semantics" >
+| < PDL : "pdl" >
+| < SEMANTIC_INFO : "semantic_info" >
+| < CLASSVIEW : "ClassView" >
+| < EXCEPTIONS : "exceptions" >
+| < SPACE : "space" >
+| < REALIZEVIEW : "RealizeView" >
+| < ASSOCIATIONVIEWNEW : "AssociationViewNew" >
+| < ROLEVIEW : "RoleView" >
+| < SEGLABEL : "SegLabel" >
+| < ATTRIBUTES : "attributes" >
+| < QUID : "quid" >
+| < QUIDFLOW : "quidflow" >
+| < QUIDSTATE : "quidstate" >
+| < MODVIEW : "ModView" >
+| < IS_UNIT : "is_unit" >
+| < IS_LOADED : "is_loaded" > 
+| < MODVISVIEW : "ModVisView" >
+| < QUIDU : "quidu" >
+| < TOOL : "tool" >
+| < SUPPLIER_IS_SPEC : "supplier_is_spec" >       
+| < NAME : "name" >       	
+| < VALUE : "value" >      	
+| < TEXT : "Text" >
+| < PROTOCOL : "protocol" > 
+| < VERSION : "version" >
+| < _WRITTEN : "_written" >
+| < CHARSET : "charSet" >
+| < TARGET : "target" >
+| < ENFORCECLOSUREAUTOLOAD : "enforceClosureAutoLoad" >
+| < RIGHTMARGIN  : "rightMargin" >
+| < LEFTMARGIN 	 : "leftMargin" >
+| < TOPMARGIN  	 : "topMargin" >
+| < BOTTOMMARGIN 	 : "bottomMargin" >
+| < PAGEOVERLAP 	 : "pageOverlap" >
+| < CLIPICONLABELS : "clipIconLabels" >
+| < AUTORESIZE : "autoResize" >
+| < SNAPTOGRID : "snapToGrid" >
+| < GRIDX : "gridX" >
+| < GRIDY : "gridY" >
+| < DEFAULTFONT : "defaultFont" >
+| < SIZE   : "size" >
+| < FILE_NAME : "file_name" >
+| < FACE   : "face" >
+| < BOLD   : "bold" >
+| < ITALICS : "italics" >
+| < UNDERLINE : "underline" >
+| < STRIKE    : "strike" >
+| < COLOR     : "color" >
+| < DEFAULT_COLOR : "default_color" >
+| < SHOWMESSAGENUM : "showMessageNum" >
+| < SHOWCLASSOFOBJECT : "showClassOfObject" >
+| < NOTATION : "notation" >
+| < ROOT_USECASE_PACKAGE : "root_usecase_package" >
+| < ATTRIBUTE_SET : "Attribute_Set" >
+| < UNIT_REFERENCE_LIST :"unit_reference_list" >
+| < DIAGRAM_ITEM_LIST : "diagram_item_list" >
+| < EXPORTCONTROL : "exportControl" >
+| < GLOBAL  : "global" >
+| < LOGICAL_MODELS : "logical_models" >
+| < PROPERTIES : "properties" >
+| < PROCESS_DIAGRAM : "process_diagram" >
+| < PROCSNDEVS : "procsNDevs" >
+| < PROCESS_STRUCTURE : "process_structure" >
+| < STEREOTYPE : "stereotype" >
+| < LOGICAL_PRESENTATIONS : "logical_presentations" >
+| < TITLE  : "title" >
+| < ZOOM : "zoom" >
+| < MAX_HEIGHT : "max_height" >
+| < HEIGHT : "height" >
+| < MAX_WIDTH : "max_width" >
+| < WIDTH : "width" >
+| < ORIGIN_X : "origin_x" >
+| < ORIGIN_Y : "origin_y" >
+| < ITEMS : "items" >
+| < LOCATION : "location" >
+| < LABEL : "label" >
+| < PARENT_VIEW : "Parent_View" >
+| < FILL_COLOR : "fill_color" >
+| < NLINES : "nlines" >
+| < JUSTIFY : "justify" >
+| < LINE_COLOR : "line_color" >
+| < DOCUMENTATION : "documentation" >
+| < SHOWCOMPARTMENTSTEREOTYPES : "ShowCompartmentStereotypes" >
+| < SUPPRESSOPERATION : "SuppressOperation" >
+| < INCLUDEATTRIBUTE : "includeattribute" >
+| < INCLUDEOPERATION : "includeoperation" >
+| < SHOWOPERATIONSIGNATURE : "ShowOperationSignature" >
+| < ICON : "icon" >
+| < ICON_STYLE : "icon_style" >
+| < ANCHOR_LOC : "anchor_loc" >
+| < ANCHOR : "anchor" >
+| < USECASEVIEW : "UseCaseView" >
+| < ROLEVIEW_LIST : "roleview_list" >
+| < ROLEVIEWS : "roleviews" >
+| < CLIENT : "client" >
+| < SUPPLIER : "supplier" >
+| < VERTICES : "vertices" >
+| < LINE_STYLE : "line_style" >
+| < POINTS : "points" >
+| < ORIENTATION : "orientation" >
+| < PCTDIST : "pctdist" >
+| < HIDDEN : "hidden" >
+| < CLASSDIAGRAM :"ClassDiagram" >
+| < PROCESSES : "processes" >
+| < ASSOCIATIONCLASS : "AssociationClass" >
+| < ROLE : "role" >
+| < SUBSYSVIEW : "subsysview" >
+| < DECLARATIONS : "declarations" >
+| < ROLES : "roles" >
+| < ROLE_LIST : "role_list" >
+| < IS_NAVIGABLE : "is_navigable" >
+| < IS_PRINCIPAL : "is_principal" >
+| < IS_AGGREGATE : "is_aggregate" >
+| < CONSTRAINTS : "constraints" >
+| < ABSTRACT : "abstract" >
+| < ANNOTATION : "annotation" >
+| < VISIBLE_MODULES : "visible_modules" >
+| < MODULE : "module" >
+| < DEPENDENCY_LIST : "dependency_list" >
+| < DEPENDENCY_RELATIONSHIP :"Dependency_Relationship" >
+| < DEPENDENCYVIEW : "dependencyview" >
+| < INHERITVIEW : "InheritView" >
+| < INHERITTREEVIEW : "InheritTreeView" >
+| < COMPARTMENT : "compartment" >
+| < COMPARTMENTITEMS : "compartmentItems" >
+| < ORIGIN_ATTACHMENT : "origin_attachment" >
+| < TERMINAL_ATTACHMENT : "terminal_attachment" >
+| < DRAWSUPPLIER : "drawsupplier" >
+| < USESVIEW : "UsesView" >
+| < CARDINALITY : "cardinality" > 
+| < CLIENT_CARDINALITY : "client_cardinality" > 
+| < SUPERCLASSES : "superclasses" >
+| < INHERITANCE_RELATIONSHIP_LIST : "inheritance_relationship_list" >
+| < INHERITANCE_RELATIONSHIP : "inheritance_relationship" >
+| < USED_NODES : "used_nodes" >
+| < USES_RELATIONSHIP : "uses_relationship" >
+| < USES_RELATIONSHIP_LIST : "uses_relationship_list" >
+| < STATEMACHINE : "statemachine" >
+| < STATE_MACHINE : "state_machine" >
+| < STATES : "states" >
+| < STATE : "state" >
+| < PARTITIONS  : "partitions" >
+| < OBJECTS  : "objects" >
+| < TRANSITIONS  : "transitions" >
+| < OBJECTFLOWS  : "objectflows" >
+| < OBJECT_FLOW  : "object_flow" >
+| < STATEDIAGRAMS  : "statediagrams" >
+| < STATE_DIAGRAM  : "state_diagram" >
+| < TRANSITION_LIST : "transition_list" >
+| < STATE_TRANSITION : "state_transition" >
+| < OBJECTFLOW_LIST : "objectflow_list" >
+| < ACTIVITYSTATE : "activitystate" >
+| < SYNCHRONIZATIONSTATE : "SynchronizationState" >
+| < DECISION : "decision" >
+| < TYPE : "type" >
+| < SUPPLIER_QUIDU : "supplier_quidu" >
+| < CLIENT_QUIDU : "client_quidu" >
+| < SENDEVENT : "sendevent" >
+| < EVENT : "event" >
+| < ACTIVITYDIAGRAM : "activitydiagram" >
+| < SWIMLANE : "Swimlane" >
+| < ACTIVITYSTATEVIEW : "ActivityStateView" >
+| < STATEVIEW : "StateView" >
+| < TRANSVIEW : "TransView" >
+| < SELFTRANSVIEW : "SelfTransView" >
+| < X_OFFSET : "x_offset" >
+| < Y_OFFSET : "y_offset" >
+| < DECISIONVIEW : "DecisionView" >
+| < OPERATION : "operation" >
+| < OPERATIONS : "operations" >
+| < CONCURRENCY : "concurrency" >
+| < OPEXPORTCONTROL : "opExportControl" >
+| < UID : "uid" >
+| < CLASS_ATTRIBUTE : "class_attribute" >
+| < CLASSATTRIBUTE : "classattribute" >
+| < CLASS_ATTRIBUTES : "class_attributes" >
+| < CLASS_ATTRIBUTE_LIST : "class_attribute_list" >
+| < CATEGORYVIEW : "categoryView" >
+| < MECHANISM : "mechanism" >
+| < MECHANISM_REF : "mechanism_ref" >
+| < COLLABORATORS : "collaborators" >
+| < PERSISTENCE : "persistence" >
+| < CREATIONOBJ : "creationObj" >
+| < MULTI : "multi" >
+| < LINK : "link" >
+| < LINK_LIST : "link_list" >
+| < MESSAGE : "message" >
+| < MESSAGES : "messages" >
+| < FREQUENCY : "frequency" >
+| < SYNCHRONIZATION : "synchronization" >
+| < DIR : "dir" >
+| < SEQUENCE : "sequence" >
+| < ORDINAL : "ordinal" >
+| < CREATION : "creation" >
+| < INTERACTIONDIAGRAM : "InteractionDiagram" >
+| < INTEROBJVIEW : "InterObjView" >
+| < INTERMESSVIEW : "InterMessView" >
+| < SELFMESSVIEW : "SelfMessView" >
+| < FOCUS_OF_CONTROL : "Focus_Of_Control" >
+| < ICON_HEIGHT : "icon_height" >
+| < ICON_WIDTH : "icon_width" >
+| < ICON_Y_OFFSET : "icon_y_offset" >
+| < Y_COORD : "y_coord" >
+| < NESTED : "nested" >
+| < FOCUS_SRC : "focus_src" >
+| < FOCUS_ENTRY : "focus_entry" >
+| < ORIGIN : "origin" >
+| < TERMINUS : "terminus" >
+| < CONDITION : "condition" >
+| < ACTION : "action" >
+| < ACTIONS : "actions" >
+| < ACTION_LIST : "action_list" >
+| < ACTIONTIME : "actiontime" >
+| < SUPPLIER_CARDINALITY : "supplier_cardinality" >
+| < OBJECTDIAGRAM : "ObjectDiagram" >
+| < OBJECTVIEW : "ObjectView" >
+| < OBJECT_FLOW_VIEW : "Object_Flow_View" >
+| < SUBOBJECTS : "subobjects" >
+| < LINKSELFVIEW : "linkSelfView" >
+| < MESSVIEW : "messView" >
+| < LINKVIEW : "linkView" >
+| < OBJECT_ARC : "object_arc" >
+| < DESTRUCTION_MARKER : "Destruction_Marker" >
+| < REALIZED_INTERFACES : "realized_interfaces" >
+| < REALIZE_REL_LIST : "realize_rel_list" >
+| < REALIZE_RELATIONSHIP : "Realize_Relationship" >
+| < ROOT_SUBSYSTEM : "root_subsystem" >
+| < SYNC_IS_HORIZONTAL : "sync_is_horizontal" >
+| < SYNC_FLOW_DIRECTION : "sync_flow_direction" >
+| < SYNCHRONIZATIONVIEW : "SynchronizationView" >
+| < PARTITION : "Partition" >
+| < LANGUAGE : "language" >
+| < CONTAINMENT : "containment" >
+| < SUPPLIER_CONTAINMENT : "supplier_containment" >
+| < CLIENT_CONTAINMENT : "client_containment" >
+| < CLIENT_VISIBILITY : "client_visibility" >
+| < SUPPLIER_VISIBILITY : "supplier_visibility" >
+| < SUPPRESSATTRIBUTE : "SuppressAttribute" >
+| < FRIEND : "friend" >
+| < PARAMETERS : "parameters" >
+| < PARAMETER : "parameter" >
+| < RANK : "rank" >
+| < IMPORTVIEW : "importview" >
+| < VISIBLE_CATEGORIES : "visible_categories" >
+| < VISIBILITY_RELATIONSHIP : "visibility_relationship" >
+| < VISIBILITY_RELATIONSHIP_LIST : "visibility_relationship_list" >
+| < WHEN : "when" >
+| < KEYS : "keys" >
+| < NESTEDCLASSES : "nestedclasses" >
+| < INITV : "initv" >
+| < ROOT_CATEGORY : "root_category" >
+| < SUBSYSTEM : "subsystem" >
+| < CLASS_UTILITY : "class_utility" >
+| < RESULT : "result" >
+}
+
+TOKEN :
+{
+  < TRUE       : "TRUE" >
+| < FALSE      : "FALSE" >
+| < STRING     : "\"" ( ("\\" ~[]) | ~["\""])* "\"" >
+| < MULTILINE  : "|"  (~["\n","\r"])* > 
+| < NUMBER     : "0" | ("-")? ( ["1"-"9"] (["0"-"9"])* ) >
+| < FLOAT      : ("-")? ( "0" | ( ["1"-"9"] (["0"-"9"])* ) ) "." (["0"-"9"])* >
+| < REFERENCE  : "@" (["1"-"9"] (["0"-"9"])*) >
+}
+
+Object rose_file() throws Exception 
+:
+{
+  Object retVal;
+}
+{
+  petal_object()
+  (
+      LOOKAHEAD(3) retVal = design_object()			// Petal-File oder MDL-File
+    | LOOKAHEAD(3) retVal = class_category_object()	// Cat-File
+    | LOOKAHEAD(3) retVal = subsystem_object()		// Sub-File
+  )
+  {
+	return retVal;
+  }
+ //<EOF>
+}
+
+void petal_object() :
+{}
+{
+  "(" < OBJECT > < PETAL > 
+  (
+    ( < VERSION >  number_value() )
+|   ( < _WRITTEN > string_value() )
+|   ( < CHARSET >  number_value() )
+  )*
+  ")"
+}
+
+PackageNode design_object() throws Exception
+:
+{
+  PackageNode retVal = new PackageNode();
+  SubSystemObject sso;
+  PackageNode cco;
+  ProcessesObject po;
+  String s;
+  List<Attribute> a;
+  Defaults d;
+  PropertyList p;
+}
+{
+  "(" < OBJECT > < DESIGN > ( s=string_value() { retVal.setName(s); } )?
+  (
+    < ATTRIBUTES > a = attribute_set_list()  { retVal.setAttributes(a); }
+  | s = quid_attribute()                     { retVal.setQuid(s); }
+  | enforceClosureAutoload_attribute()
+  | < DEFAULTS > d = defaults_object()       { retVal.setDefaults(d); }
+  | < ROOT_USECASE_PACKAGE > cco = class_category_object() { retVal.append(cco); }
+  | < ROOT_CATEGORY > cco = class_category_object()        { retVal.append(cco); }
+  | < ROOT_SUBSYSTEM > sso = subsystem_object()       { retVal.append(sso); }
+  | < PROCESS_STRUCTURE > po = processes_object()    { retVal.setProcessStructure(po); }
+  | < PROPERTIES > p = properties_object()   { retVal.setProperties(p); }
+  | is_unit_attribute()
+  | is_loaded_attribute()
+  )*
+  ")"
+  {
+    return retVal;
+  }
+}
+
+PackageNode class_category_object() throws Exception
+:
+{
+  PackageNode cco = new PackageNode();
+  VisibilityKind visibility;
+  String s;
+  ArrayList<ExternalDoc> eda;
+  ArrayList<ModelNode> url;
+}
+{
+  "(" < OBJECT > < CLASS_CATEGORY > s = string_value() { cco.setName(s); }
+  (
+    < ATTRIBUTES > attribute_set_list() {}
+  | s = quid_attribute() { cco.addAttribute("quid", s); }
+  | eda = external_docs_attribute() { cco.setExternalDocsAttribute(eda); }
+  | visibility = exportControl_attribute() { cco.setVisibility(visibility); }
+  | global_attribute()
+  | < SUBSYSTEM > string_value()
+  | quidu_attribute() {}
+  | < LOGICAL_MODELS > url = unit_reference_list() { cco.append(url); }
+  | < LOGICAL_PRESENTATIONS > url = unit_reference_list() { cco.append(url); }
+  | stereotype_attribute() {}
+  | visible_modules_attribute() {}
+  | statemachine_attribute() {}
+  | documentation_attribute() {}
+  | visible_categories_attribute() {}
+  | is_unit_attribute() {}
+  | is_loaded_attribute() {}
+  | file_name_attribute() {}
+  )*
+  ")"
+  {
+    return cco;
+  }
+}
+
+SubSystemObject subsystem_object()  throws Exception
+:
+{
+  SubSystemObject sso = new SubSystemObject();
+  String s;
+  ArrayList<ModelNode> url;
+}
+{
+  "(" < OBJECT > < SUBSYSTEM > s = string_value() { sso.setName(s); }
+  (
+    s = quid_attribute() { sso.setQuid(s); }
+|   quidu_attribute() { }
+|   < PHYSICAL_MODELS > url = unit_reference_list() { sso.append(url); }
+|   < PHYSICAL_PRESENTATIONS > url = unit_reference_list() { sso.append(url); }
+|   documentation_attribute() { }
+|   visible_modules_attribute() { }
+|   < ATTRIBUTES > attribute_set_list() { }
+|   category_attribute() { }
+|   is_unit_attribute()
+|   is_loaded_attribute()
+|   file_name_attribute() { }
+  )*
+  ")"
+  {
+	return sso;
+  }
+}
+
+
+void semantic_info_object()
+:
+{}
+{
+  "(" < OBJECT > < SEMANTIC_INFO >
+  (
+    pdl_attribute()
+  | diagram_ref_attribute()
+  )
+  ")"
+}
+
+RRClass class_object() throws Exception :
+{
+  VisibilityKind visibility;
+  RRClass rv = new RRClass();
+}
+{
+  "(" < OBJECT >
+  (
+    < CLASS >
+  | < PARAMETERIZED_CLASS >
+  | < INSTANTIATED_CLASS >
+  )
+  ( string_value() )?
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | external_docs_attribute()
+  | stereotype_attribute()
+  | superclasses_attribute()
+  | documentation_attribute()
+  | used_nodes_attribute()
+  | statemachine_attribute()
+  | operations_attribute()
+  | class_attributes_attribute()
+  | realized_interfaces_attribute()
+  | visible_modules_attribute()
+  | language_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  | nestedClasses_attribute()
+  | abstract_attribute()
+  | persistence_attribute()
+  | cardinality_attribute()
+  | visibility = exportControl_attribute()
+  | space_attribute()
+  | < MODULE > string_value()
+  | parameters_attribute()
+  )*
+  ")" { return rv; }
+}
+
+Attribute attribute_object()
+:
+{
+  Attribute a = new Attribute();
+  String s;
+}
+{
+  "(" < OBJECT > < ATTRIBUTE > 
+  (
+    < TOOL > s = string_value()
+  | < NAME > s = string_value()
+  | value_attribute()
+  )*
+  ")"
+  {
+	return a;
+  }
+}
+
+RRModule module_object() throws Exception
+:
+{ RRModule rv = new RRModule(); }
+{
+  "(" < OBJECT > < MODULE > string_value() string_value() string_value()
+  (
+  < ATTRIBUTES > attribute_set_list()
+| quid_attribute()
+| quidu_attribute()
+| stereotype_attribute()
+| language_attribute()
+| visible_modules_attribute()
+| documentation_attribute()
+| declarations_attribute()
+| realized_interfaces_attribute()
+| < CLASS > string_value()
+  )*
+  ")" {return rv; }
+}
+
+void operation_object()
+:
+{}
+{
+  "(" < OBJECT > < OPERATION > string_value() 
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | documentation_attribute()
+  | concurrency_attribute()
+  | opExportControl_attribute()
+  | uid_attribute()
+  | stereotype_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  | parameters_attribute()
+  | statemachine_attribute()
+  | abstract_attribute()
+  | external_docs_attribute()
+  | result_attribute()
+  | exceptions_attribute()
+  | pre_condition_attribute()
+  | post_condition_attribute()
+  | semantics_attribute()
+  | protocol_attribute()
+  )*
+  ")"
+}
+
+void classAttribute_object() throws Exception
+:
+{
+  VisibilityKind visibility;
+}
+{
+  "(" < OBJECT > < CLASSATTRIBUTE > string_value() 
+  (
+    quid_attribute()
+  | documentation_attribute()
+  | type_attribute()
+  | visibility = exportControl_attribute()
+  | quidu_attribute()
+  | persistence_attribute()
+  | initv_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  | derived_attribute()
+  | static_attribute()
+  | stereotype_attribute()
+  | containment_attribute()
+  )*
+  ")"
+}
+
+Defaults defaults_object() :
+{
+  Defaults d = new Defaults();
+}
+{
+"(" < OBJECT > < DEFAULTS >
+  (
+ rightMargin_attribute()
+| leftMargin_attribute()
+| topMargin_attribute()
+| bottomMargin_attribute()
+| pageOverlap_attribute()
+| clipIconLabels_attribute()
+| autoResize_attribute()
+| snapToGrid_attribute()
+| gridX_attribute()
+| gridY_attribute()
+| defaultFont_attribute()
+| showMessageNum_attribute()
+| showClassOfObject_attribute()
+| notation_attribute()
+  )*
+  ")"
+  {
+    return d;
+  }
+}
+
+PropertyList properties_object()
+:
+{
+  PropertyList p = new PropertyList();
+  ArrayList<Attribute> al;
+  String s;
+}
+{
+  "(" < OBJECT > < PROPERTIES > 
+  (
+    s = quid_attribute() { p.setQuid(s); }
+  | < ATTRIBUTES > al = attribute_set_list() { p.setAttributes(al); }
+  )*
+  ")"
+  {
+	return p;
+  }
+}
+ 
+
+void link_object()
+:
+{}
+{
+  "(" < OBJECT > < LINK > 
+  (
+    quid_attribute()
+  | supplier_attribute()
+  | quidu_attribute()
+  | messages_attribute()
+  | supplier_containment_attribute()
+  | client_containment_attribute()
+  | client_visibility_attribute()
+  | label_attribute()
+  | association_attribute()
+  | supplier_visibility_attribute()
+  )*
+  ")"
+}
+    
+void font_object() :
+{}
+{
+  "(" < OBJECT > < FONT > 
+  (
+ size_attribute()
+| face_attribute()
+| bold_attribute()
+| italics_attribute()
+| underline_attribute()
+| strike_attribute()
+| color_attribute()
+| default_color_attribute()
+  )*
+  ")"
+}
+
+void modView_object()
+:
+{}
+{
+  "(" < OBJECT >
+  (
+  < MODVIEW >
+| < MODVISVIEW >
+| < SUBSYSVIEW >
+  )
+  string_value() ( LOOKAHEAD(4) string_value() )? ( string_value() )? < REFERENCE >
+  (
+    location_attribute()
+  | font_attribute()
+  | label_attribute()
+  | stereotype_attribute()
+  | icon_attribute()
+  | icon_style_attribute()
+  | fill_color_attribute()
+  | quidu_attribute()
+  | width_attribute()
+  | height_attribute()
+  | autoResize_attribute()
+  | client_attribute()
+  | supplier_attribute()
+  | vertices_attribute()
+  | line_style_attribute()
+  | line_color_attribute()
+  )*
+  ")"
+}
+
+
+ExternalDoc external_doc_object()
+ :
+{
+	ExternalDoc ed;
+	String s;
+}
+{
+  "(" < OBJECT > < EXTERNAL_DOC >
+  (
+  < EXTERNAL_DOC_PATH > s = string_value() { ed = new ExternalDoc(s, null); }
+|
+  < EXTERNAL_DOC_URL >  s = string_value() { ed = new ExternalDoc(null, s); }
+)
+  ")"
+  {
+	return ed;
+  }
+}
+
+//void useCaseDiagram_object()
+RRDiagram diagram_object()
+ :
+{ RRDiagram rv = new RRDiagram(); }
+{
+ "(" < OBJECT > ( < USECASEDIAGRAM > | < OBJECTDIAGRAM > | < INTERACTIONDIAGRAM > | < CLASSDIAGRAM > | < MODULE_DIAGRAM > ) <STRING >
+ (
+ < ATTRIBUTES > attribute_set_list() // Nur bei CLASSDIAGRAM
+ | documentation_attribute() // Nicht bei MODULE_DIAGRAM
+ | external_docs_attribute()   // Nur bei OBJECTDIAGRAM, CLASSDIAGRAM und USECASEDIAGRAM
+ | items_attribute()
+ | max_height_attribute()
+ | max_width_attribute()
+ | mechanism_ref_attribute() // Nur bei INTERACTIONDIAGRAM und OBJECTDIAGRAM
+ | origin_x_attribute() 
+ | origin_y_attribute() 
+ | quid_attribute() 
+ | title_attribute()  
+ | zoom_attribute() 
+ )*
+ ")" { return rv; }
+}
+
+ProcessesObject processes_object()
+ :
+{
+  ProcessesObject po = new ProcessesObject();
+  String s;
+}
+{
+ "(" < OBJECT > < PROCESSES > 
+ (
+  s = quid_attribute() { po.setQuid(s); }
+| procsNDevs_attribute() {}
+ )*
+ ")"
+ {
+	return po;
+ }
+}
+
+RRUseCase useCase_object()  throws Exception
+:
+{
+  RRUseCase rv = new RRUseCase();
+  ArrayList<ModelNode> url;
+}
+{
+  "(" < OBJECT > < USECASE > string_value()
+  (
+    quid_attribute()
+  | documentation_attribute()
+  | stereotype_attribute()
+  | external_docs_attribute()
+  | < LOGICAL_PRESENTATIONS > url = unit_reference_list() { rv.append(url); }
+  | abstract_attribute()
+  | visible_modules_attribute()
+  | < LOGICAL_MODELS > url = unit_reference_list() { rv.append(url); }
+  | statemachine_attribute()
+  | superclasses_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  | rank_attribute()
+  | realized_interfaces_attribute()
+  )*
+  ")" { return rv; }
+}
+
+void process_diagram_object()
+:
+{}
+{
+  "(" < OBJECT > < PROCESS_DIAGRAM > string_value()
+  (
+    quid_attribute()
+  | title_attribute()
+  | zoom_attribute()
+  | max_height_attribute()
+  | max_width_attribute()
+  | origin_x_attribute()
+  | origin_y_attribute()
+  | items_attribute()
+  | documentation_attribute()
+  )*
+  ")"
+}
+
+RRRelation association_object() throws Exception
+:
+{ RRRelation rv = new RRRelation(); }
+{
+  "(" < OBJECT > < ASSOCIATION > string_value()
+  (
+   quid_attribute()
+|  stereotype_attribute()
+|  roles_attribute()
+|  documentation_attribute()
+|  < ATTRIBUTES > attribute_set_list()
+|  asssociationClass_attribute()
+|  constraints_attribute()
+|  derived_attribute()
+  )*
+  ")" { return rv; }
+}
+
+void itemLabel_object()
+:
+{}
+{
+  "(" < OBJECT > < ITEMLABEL >
+  (
+    parent_view_attribute()
+  | location_attribute()
+  | fill_color_attribute()
+  | nlines_attribute()
+  | max_width_attribute()
+  | justify_attribute()
+  | label_attribute()
+  | anchor_attribute()
+  | anchor_loc_attribute()
+  )*      	
+  ")"
+}
+
+void segLabel_object()
+:
+{}
+{
+  "(" < OBJECT > < SEGLABEL > < REFERENCE >
+  (
+    parent_view_attribute()
+  | quidu_attribute()
+  | location_attribute()
+  | font_attribute()
+  | size_attribute()
+  | anchor_attribute()
+  | anchor_loc_attribute()
+  | nlines_attribute()
+  | max_width_attribute() 
+  | justify_attribute()
+  | label_attribute()
+  | pctDist_attribute()
+  | height_attribute()
+  | orientation_attribute()
+  | hidden_attribute()
+  )*      	
+  ")"
+}
+
+void label_object()
+:
+{}
+{
+  "(" < OBJECT > < LABEL > < REFERENCE >
+  (
+    location_attribute()
+  | font_attribute()
+  | nlines_attribute()
+  | max_width_attribute() 
+  | justify_attribute()
+  | label_attribute()
+  | parent_view_attribute()
+  )*      	
+  ")"
+}
+
+RRClass class_utility_object() throws Exception
+:
+{ RRClass rv = new RRClass(); }
+{
+  "(" < OBJECT > < CLASS_UTILITY > string_value()
+  (
+    quid_attribute()
+  | stereotype_attribute()
+  | operations_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  | class_attributes_attribute()
+  )*
+  ")" { return rv; }
+}
+
+void role_object() throws Exception
+:
+{
+  VisibilityKind visibility;
+}
+{
+  "(" < OBJECT > < ROLE > string_value()
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | supplier_attribute()
+  | is_navigable_attribute()
+  | is_principal_attribute()
+  | is_aggregate_attribute()
+  | constraints_attribute()
+  | label_attribute()
+  | client_cardinality_attribute()
+  | friend_attribute()
+  | keys_attribute()
+  | visibility = exportControl_attribute()
+  | containment_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  | documentation_attribute()
+  | static_attribute()
+  | stereotype_attribute()
+  )*
+  ")"
+}
+
+void dependency_relationship_object()
+:
+{}
+{
+  "(" < OBJECT > < DEPENDENCY_RELATIONSHIP >
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | supplier_attribute()
+  | stereotype_attribute()
+  | documentation_attribute()
+  | label_attribute()
+  )*
+  ")"
+}
+
+void focus_of_control_object()
+:
+{}
+{
+  "(" < OBJECT > < FOCUS_OF_CONTROL > string_value() < REFERENCE >
+  (
+    location_attribute()
+  | line_color_attribute()
+  | interObjView_attribute()
+  | height_attribute()
+  | y_coord_attribute()
+  | nested_attribute()
+  | fill_color_attribute()
+  | font_attribute()
+  )*
+  ")"
+}
+
+void compartment_object()
+:
+{}
+{
+  "(" < OBJECT > < COMPARTMENT >
+  (
+    parent_view_attribute()
+  | location_attribute()
+  | fill_color_attribute()
+  | nlines_attribute()
+  | max_width_attribute()
+  | justify_attribute()
+  | anchor_attribute()
+  | font_attribute()
+  | icon_style_attribute()
+  | compartmentItems_attribute()
+  | width_attribute()
+  | height_attribute()
+  | anchor_loc_attribute()
+  )*
+  ")"
+}
+
+void inheritance_relationship_object()
+:
+{}
+{
+  "(" < OBJECT > < INHERITANCE_RELATIONSHIP >
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | supplier_attribute()
+  | label_attribute()
+  | documentation_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  )*
+  ")"
+}
+
+void uses_relationship_object() throws Exception
+:
+{
+  VisibilityKind visibility;
+}
+{
+  "(" < OBJECT > < USES_RELATIONSHIP >
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | supplier_attribute()
+  | supplier_cardinality_attribute()
+  | client_cardinality_attribute()
+  | documentation_attribute()
+  | label_attribute()
+  | stereotype_attribute()
+  | visibility = exportControl_attribute()
+  )*
+  ")"
+}
+
+void state_machine_object()
+:
+{}
+{
+  "(" < OBJECT > < STATE_MACHINE > string_value()
+  (
+    quid_attribute()
+  | states_attribute()
+  | partitions_attribute()
+  | objects_attribute()   
+  | transitions_attribute()
+  | < OBJECTFLOWS > objectflow_list()
+  | statediagrams_attribute()
+  | documentation_attribute()
+  | stereotype_attribute()
+  | external_docs_attribute()
+  )*
+  ")"
+}
+
+void activityState_object()
+:
+{}
+{
+  "(" < OBJECT > < ACTIVITYSTATE > string_value()
+  (
+    quid_attribute()
+  | documentation_attribute()
+  | statemachine_attribute()
+  | external_docs_attribute()
+  | stereotype_attribute()
+  | actions_attribute()
+  )*
+  ")"
+}
+
+void synchronizationState_object()
+:
+{}
+{
+  "(" < OBJECT > < SYNCHRONIZATIONSTATE > string_value() ( < REFERENCE > )?
+  (
+    quid_attribute()
+  | label_attribute()
+  | location_attribute()
+  | font_attribute()
+  | icon_style_attribute()
+  | line_color_attribute()
+  | sync_flow_direction_attribute()
+  | sync_is_horizontal_attribute()
+  | stereotype_attribute()
+  )*
+  ")"
+}
+
+void decision_object()
+:
+{}
+{
+  "(" < OBJECT > < DECISION > string_value()
+  (
+    quid_attribute()
+  | documentation_attribute()
+  )*
+  ")"
+}
+
+void state_object()
+:
+{}
+{
+  "(" < OBJECT > < STATE > string_value()
+  (
+    quid_attribute()
+  | type_attribute()
+  | documentation_attribute()
+  | transitions_attribute()
+  | actions_attribute()
+  | statemachine_attribute()
+  )*
+  ")"
+}
+
+void state_transition_object()
+:
+{}
+{
+  "(" < OBJECT > < STATE_TRANSITION >
+  (
+    quid_attribute()
+  | label_attribute()
+  | client_attribute()
+  | < CLIENT_QUIDU > string_value()
+  | supplier_attribute()
+  | < SUPPLIER_QUIDU > string_value()
+  | sendEvent_attribute()
+  | event_attribute()
+  | documentation_attribute()
+  | condition_attribute()
+  | action_attribute()
+  | stereotype_attribute()
+  )*
+  ")"
+}
+
+void sendEvent_object()
+:
+{}
+{
+  "(" < OBJECT > < SENDEVENT >
+  (
+    quid_attribute()
+  | event_attribute()
+  | actionTime_attribute()
+  | target_attribute()
+  | parameters_attribute()
+  )*
+  ")"
+}
+
+void event_object()
+:
+{}
+{
+  "(" < OBJECT > < EVENT > string_value()
+  (
+    quid_attribute()
+  | parameters_attribute()
+  )*
+  ")"
+}
+
+void activityDiagram_object()
+:
+{}
+{
+  "(" < OBJECT > < ACTIVITYDIAGRAM > string_value()
+  (
+    quid_attribute()
+  | title_attribute()
+  | zoom_attribute()
+  | max_height_attribute()
+  | max_width_attribute()
+  | origin_x_attribute()
+  | origin_y_attribute()
+  | items_attribute()
+  | documentation_attribute()
+  | external_docs_attribute()
+  )*
+  ")"
+}
+
+void swimlane_object()
+:
+{}
+{
+  "(" < OBJECT > < SWIMLANE > string_value() < REFERENCE >
+  (
+    line_color_attribute()
+  | width_attribute()
+  | quidu_attribute()
+  | location_attribute()
+  | fill_color_attribute()
+  )*
+  ")"
+}
+
+//void activityStateView_object()
+void view_object()
+:
+{}
+{
+  "(" < OBJECT > ( < ACTIVITYSTATEVIEW > | < OBJECTVIEW > | < OBJECT_FLOW_VIEW > | < LINKSELFVIEW >
+                 | < LINKVIEW > | < MESSVIEW > | < DATAFLOWVIEW >
+                 | < ATTACHVIEW > | < ASSOCATTACHVIEW > | < USESVIEW > | < REALIZEVIEW > | < USECASEVIEW > | < ASSOCIATIONVIEWNEW > 
+                 | < ROLEVIEW > | < DEPENDENCYVIEW > | < INHERITVIEW >| < INHERITTREEVIEW > | < SYNCHRONIZATIONVIEW >
+                 | < TRANSVIEW > | < SELFTRANSVIEW > | < DECISIONVIEW >
+                 | < CATEGORYVIEW > | < IMPORTVIEW >
+                 | < INTEROBJVIEW > | < INTERMESSVIEW > | < SELFMESSVIEW >
+                 ) string_value() < REFERENCE >
+  (
+    annotation_attribute()   
+  | autoResize_attribute()
+  | client_attribute()
+  | compartment_attribute()  
+  | dataFlowView_attribute()
+  | dir_attribute()
+  | drawSupplier_attribute()
+  | fill_color_attribute()
+  | font_attribute()
+  | height_attribute()
+  | icon_attribute()
+  | icon_style_attribute()
+  | icon_height_attribute()
+  | icon_width_attribute()
+  | label_attribute()
+  | line_color_attribute()
+  | line_style_attribute()
+  | location_attribute()
+  | messView_attribute()
+  | object_arc_attribute()
+  | orientation_attribute()
+  | origin_attachment_attribute()
+  | origin_attribute()
+  | parent_view_attribute()
+  | pctDist_attribute()
+  | quid_attribute()
+  | quidflow_attribute()
+  | quidstate_attribute()
+  | quidu_attribute()
+  | roleview_list_attribute()
+  | state_attribute()
+  | stereotype_attribute()
+  | subobjects_attribute()
+  | supplier_attribute()
+  | sync_flow_direction_attribute()
+  | sync_is_horizontal_attribute()
+  | terminal_attachment_attribute()
+  | terminus_attribute()
+  | vertices_attribute()
+  | width_attribute()
+  | x_offset_attribute()
+  | y_offset_attribute()
+  | icon_y_offset_attribute()
+  | focus_of_control_attribute()
+  | focus_src_attribute()
+  | focus_entry_attribute()
+  | ordinal_attribute()
+  )*
+  ")"
+}
+
+//void classView_object()
+void view_object2()
+:
+{}
+{
+  "(" < OBJECT > ( < CLASSVIEW > | < STATEVIEW > ) string_value() string_value() < REFERENCE >
+  (
+  annotation_attribute()
+| autoResize_attribute()
+| compartment_attribute()
+| fill_color_attribute()
+| font_attribute()
+| height_attribute()
+| icon_attribute()
+| icon_style_attribute()
+| includeAttribute_attribute()
+| includeOperation_attribute()
+| label_attribute()
+| line_color_attribute()
+| location_attribute()
+| parent_view_attribute()
+| quidu_attribute()
+| showcompartmentstereotypes_attribute()
+| showOperationSignature_attribute()
+| stereotype_attribute()
+| suppressAttribute_attribute()
+| suppressOperation_attribute()    
+| width_attribute()
+  )*
+  ")"
+}
+
+void action_object()
+:
+{}
+{
+  "(" < OBJECT > < ACTION > string_value()
+  (
+    quid_attribute()
+  | actionTime_attribute()
+  )*
+  ")"
+}
+
+void actionTime_object()
+:
+{}
+{
+  "(" < OBJECT > < ACTIONTIME > 
+  (
+    when_attribute()
+  )*
+  ")"
+}
+
+
+PackageNode mechanism_object()  throws Exception // PackageNode ist hier nicht korrekt. Dient lediglich dazu, das Rose-Modell �berhaupt ersteinmal laden zu k�nnen.
+ :
+{
+  PackageNode rv = new PackageNode();
+  ArrayList<ModelNode> url;
+}
+{
+  "(" < OBJECT > < MECHANISM > < REFERENCE >
+  (
+    < LOGICAL_MODELS > url = unit_reference_list() { rv.append(url); }
+  )*
+  ")" { return rv; }
+}
+
+PackageNode object_object() // PackageNode ist hier nicht korrekt. Dient lediglich dazu, das Rose-Modell �berhaupt ersteinmal laden zu k�nnen.
+ :
+{
+  PackageNode rv = new PackageNode();
+}
+{
+  "(" < OBJECT > < OBJECT > string_value()
+  (
+    quid_attribute()
+  | collaborators_attribute()
+  | class_attribute()
+  | quidu_attribute()
+  | persistence_attribute()
+  | creationObj_attribute()
+  | multi_attribute()
+  | documentation_attribute()
+  |  stereotype_attribute()
+  )*
+  ")" { return rv; }
+}
+
+void object_flow_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < OBJECT_FLOW >
+  (
+     quid_attribute()
+  |  < CLIENT_QUIDU > string_value()
+  |  client_attribute()
+  |  supplier_attribute()
+  |  < SUPPLIER_QUIDU > string_value()
+  |  state_attribute()
+  |  quidstate_attribute()
+  |  stereotype_attribute()
+  |  label_attribute()
+  |  documentation_attribute()
+  )*
+  ")"
+}
+
+void message_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < MESSAGE > string_value()
+  (
+    quid_attribute()
+  | frequency_attribute()
+  | synchronization_attribute()
+  | dir_attribute()
+  | sequence_attribute()
+  | ordinal_attribute()
+  | operation_attribute()
+  | quidu_attribute()
+  | creation_attribute()
+  | documentation_attribute()
+  | < ATTRIBUTES > attribute_set_list()
+  )*
+  ")"
+}
+
+void parameter_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < PARAMETER > string_value()
+  (
+    < ATTRIBUTES > attribute_set_list()
+  | quid_attribute()
+  | quidu_attribute()
+  | type_attribute()
+  | documentation_attribute()
+  | initv_attribute()
+  )*
+  ")"
+}
+
+void module_visibility_relationship_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < MODULE_VISIBILITY_RELATIONSHIP > 
+  (
+  quid_attribute()
+| supplier_attribute()
+| quidu_attribute()
+| supplier_is_subsystem_attribute()
+| label_attribute()
+| supplier_is_spec_attribute()
+  )*
+  ")"
+}
+
+
+void realize_relationship_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < REALIZE_RELATIONSHIP >
+  (
+    quid_attribute()
+  | supplier_attribute()
+  | quidu_attribute()
+  | label_attribute()
+  | stereotype_attribute()
+  | documentation_attribute()
+  )*
+  ")"
+}
+
+void destruction_marker_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < DESTRUCTION_MARKER > < REFERENCE >
+  (
+    parent_view_attribute()
+  | location_attribute()
+  | line_color_attribute()
+  | fill_color_attribute()
+  )*
+  ")"
+}
+
+
+void state_diagram_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < STATE_DIAGRAM > string_value()
+  (
+    quid_attribute()
+  | title_attribute()
+  | zoom_attribute()
+  | max_height_attribute()
+  | max_width_attribute()
+  | origin_x_attribute()
+  | origin_y_attribute()
+  | items_attribute()
+  | documentation_attribute()
+  | external_docs_attribute()
+  )*
+  ")"
+}
+
+void partition_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < PARTITION > string_value()
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | persistence_attribute()
+  | creationObj_attribute()
+  | multi_attribute()
+  | class_attribute()
+  | documentation_attribute()
+  )*
+  ")"
+}
+
+void visibility_relationship_object()
+ :
+{
+}
+{
+  "(" < OBJECT > < VISIBILITY_RELATIONSHIP >
+  (
+    quid_attribute()
+  | quidu_attribute()
+  | supplier_attribute()
+  | label_attribute()
+  )*
+  ")"
+}
+
+void nestedClasses_list() throws Exception
+ :
+{
+}
+{
+  "(" < LIST > < NESTEDCLASSES > 
+  (
+    class_object()    
+  )*
+  ")"
+}
+
+
+void visibility_relationship_list()
+ :
+{
+}
+{
+  "(" < LIST > < VISIBILITY_RELATIONSHIP_LIST > 
+  ( visibility_relationship_object() )*
+  ")"
+}
+
+void action_list()
+ :
+{
+}
+{
+  "(" < LIST > < ACTION_LIST > 
+  (
+    LOOKAHEAD(3) action_object()
+  | LOOKAHEAD(3) sendEvent_object()
+  )*
+  ")"
+}
+
+void operations_list()
+ :
+{
+}
+{
+  "(" < LIST > < OPERATIONS > 
+  ( operation_object() )*
+  ")"
+}
+
+ArrayList<ExternalDoc> external_doc_list() :
+{
+  ArrayList<ExternalDoc> al = new ArrayList<ExternalDoc>();
+  ExternalDoc ed = null;
+}
+{
+  (
+  "(" < LIST > < EXTERNAL_DOC_LIST > 
+  ( ed = external_doc_object() { al.add(ed); } )*
+  ")"
+  )
+  {
+    return al;
+  }
+}
+
+ArrayList<Attribute> attribute_set_list() :
+{
+  ArrayList<Attribute> al = new ArrayList<Attribute>();
+  Attribute a;
+}
+{
+  "(" < LIST > < ATTRIBUTE_SET > 
+  ( a = attribute_object() { al.add(a); } )*
+  ")"
+  {
+	return al;
+  }
+}
+
+ArrayList<ModelNode> unit_reference_list()  throws Exception
+:
+{
+  ModelNode m;
+  ArrayList<ModelNode> rv = new ArrayList<ModelNode>();
+}
+{
+  "(" < LIST > < UNIT_REFERENCE_LIST > 
+  (
+      LOOKAHEAD(3) m = class_category_object() { rv.add(m); }
+    | LOOKAHEAD(3) m = class_object()          { rv.add(m); }
+    | LOOKAHEAD(3) m = useCase_object()        { rv.add(m); }
+    | LOOKAHEAD(3) m = association_object()    { rv.add(m); }
+    | LOOKAHEAD(3) m = mechanism_object()      { rv.add(m); }
+    | LOOKAHEAD(3) m = object_object()         { rv.add(m); }
+    | LOOKAHEAD(3) m = diagram_object()        { rv.add(m); }
+    | LOOKAHEAD(3) m = class_utility_object()  { rv.add(m); }
+    | LOOKAHEAD(3) m = module_object()         { rv.add(m); }
+    | LOOKAHEAD(3) m = subsystem_object()      { rv.add(m); }
+  )*
+  ")" { return rv; }
+}
+
+void diagram_item_list() :
+{
+}
+{
+  "(" < LIST > < DIAGRAM_ITEM_LIST >
+  (
+  LOOKAHEAD(3) noteView_object() 
+| LOOKAHEAD(3) view_object2()
+| LOOKAHEAD(3) label_object()
+| LOOKAHEAD(3) swimlane_object()
+| LOOKAHEAD(3) view_object()
+| LOOKAHEAD(3) destruction_marker_object()
+| LOOKAHEAD(3) modView_object()
+  )*
+  ")"
+}
+
+void noteView_object()
+ :
+{}
+{
+ "(" < OBJECT > < NOTEVIEW > < REFERENCE >
+ (
+   location_attribute()
+ | font_attribute()
+ | label_attribute()
+ | line_color_attribute()
+ | fill_color_attribute()
+ | width_attribute()
+ | height_attribute()
+ | quidu_attribute()
+ | parent_view_attribute()
+ )*
+ ")"
+}
+
+void roleviews_list() :
+{
+}
+{
+  "(" < LIST > < ROLEVIEWS >
+  (
+    view_object()
+  )*
+  ")"
+}
+
+void procsNDevs_list()
+ :
+{
+}
+{
+  "(" < LIST > 
+  (
+    process_diagram_object()
+  )*
+  ")"
+}
+
+void points_list()
+ :
+{
+}
+{
+  "(" < LIST > < POINTS >
+  (
+    numberPair_value()
+  )*
+  ")"
+}
+
+void rolelist_list() throws Exception
+ :
+{
+}
+{
+  "(" < LIST > < ROLE_LIST >
+  (
+    role_object()
+  )*
+  ")"
+}
+
+void dependency_list()
+ :
+{
+}
+{
+  "(" < LIST > < DEPENDENCY_LIST >
+  (
+    LOOKAHEAD(3) dependency_relationship_object()
+  | LOOKAHEAD(3) module_visibility_relationship_object()
+  )*
+  ")"
+}
+
+void compartment_list()
+ :
+{
+}
+{
+  "(" < LIST > < COMPARTMENT >
+  (
+    string_value()
+  )*
+  ")"
+}
+
+void inheritance_relationship_list()
+ :
+{
+}
+{
+  "(" < LIST > < INHERITANCE_RELATIONSHIP_LIST >
+  (
+    inheritance_relationship_object()
+  )*
+  ")"
+}
+
+void uses_relationship_list() throws Exception
+ :
+{
+}
+{
+  "(" < LIST > < USES_RELATIONSHIP_LIST >
+  (
+    uses_relationship_object()
+  )*
+  ")"
+}
+
+void states_list()
+ :
+{
+}
+{
+  "(" < LIST > < STATES >
+  (
+    LOOKAHEAD(3) activityState_object()
+  | LOOKAHEAD(3) decision_object()
+  | LOOKAHEAD(3) state_object()
+  | LOOKAHEAD(3) synchronizationState_object()
+  )*
+  ")"
+}
+
+void link_list()
+ :
+{
+}
+{
+  "(" < LIST > < LINK_LIST >
+  (
+    link_object()
+  )*
+  ")"
+}
+
+void partitions_list()
+ :
+{
+}
+{
+  "(" < LIST > < PARTITIONS >
+  (
+    partition_object()
+  )*
+  ")"
+}
+
+void objects_list()
+ :
+{
+}
+{
+  "(" < LIST > < OBJECTS >
+  (
+    object_object()
+  )*
+  ")"
+}
+
+void transition_list()
+ :
+{
+}
+{
+  "(" < LIST > < TRANSITION_LIST >
+  (
+    state_transition_object()
+  )*
+  ")"
+}
+
+void objectflow_list()
+ :
+{
+}
+{
+  "(" < LIST > < OBJECTFLOW_LIST >
+  (
+    object_flow_object()
+  )*
+  ")"
+}
+
+void realize_rel_list()
+ :
+{
+}
+{
+  "(" < LIST > < REALIZE_REL_LIST >
+  (
+    realize_relationship_object()
+  )*
+  ")"
+}
+
+void stateDiagrams_list()
+ :
+{
+}
+{
+  "(" < LIST > < STATEDIAGRAMS >
+  (
+    LOOKAHEAD(3) activityDiagram_object()
+  | LOOKAHEAD(3) state_diagram_object()
+  )*
+  ")"
+}
+
+void class_attribute_list() throws Exception
+ :
+{
+}
+{
+  "(" < LIST > < CLASS_ATTRIBUTE_LIST >
+  (
+    classAttribute_object()
+  )*
+  ")"
+}
+
+void parameters_list()
+ :
+{
+}
+{
+  "(" < LIST > < PARAMETERS >
+  (
+    parameter_object()
+  )*
+  ")"
+}
+
+
+void messages_list()
+ :
+{
+}
+{
+  "(" < LIST > < MESSAGES >
+  (
+    message_object()
+  )*
+  ")"
+}
+
+
+void boolean_value() :
+{
+}
+{
+  < TRUE > | < FALSE >
+}
+
+void float_value()
+ :
+{
+}
+{
+  < FLOAT >
+}
+
+void number_value()
+ :
+{
+}
+{
+  < NUMBER >
+}
+
+String string_value()
+ :
+{
+  String s="";
+  Token t;
+}
+{
+  (
+    (
+      t = < STRING >
+      {
+	    s = t.image;
+	    s = s.substring(1,s.length()-1);
+      }
+    )
+    |
+    (
+      LOOKAHEAD(2) t = < MULTILINE >
+      {
+        if (t.beginColumn > 1)
+        {
+          log.warning("Multiline-String does not start in first column! (Line " + t.beginLine + ", Col " + t.beginColumn + ")");
+        }
+        if(s.length() > 0) s += "\n";
+        s += t.image;
+      }
+    )+
+  )
+  {
+    return s;
+  }
+}
+
+String quid_attribute():
+{
+  String s;
+}
+{
+    < QUID > s=string_value()
+    {
+		return s;
+    }
+}
+
+String quidu_attribute()
+:
+{
+  String s;
+}
+{
+    < QUIDU > s=string_value()
+    {
+		return s;
+    }
+}
+
+void title_attribute()
+:
+{
+}
+{
+	< TITLE > string_value()
+}
+
+void zoom_attribute() :
+{
+}
+{
+  < ZOOM > <NUMBER >
+}
+
+void height_attribute()
+ :
+{
+}
+{
+  < HEIGHT > <NUMBER >
+}
+
+void max_height_attribute()
+ :
+{
+}
+{
+  < MAX_HEIGHT > <NUMBER >
+}
+
+void width_attribute() 
+ :
+{
+}
+{
+  < WIDTH > <NUMBER >
+}
+
+void max_width_attribute() 
+ :
+{
+}
+{
+  < MAX_WIDTH > <NUMBER >
+}
+
+void origin_x_attribute()  
+ :
+{
+}
+{
+  < ORIGIN_X > <NUMBER >
+}
+
+void origin_y_attribute()  
+ :
+{
+}
+{
+  < ORIGIN_Y > <NUMBER >
+}
+
+void items_attribute()   
+ :
+{
+}
+{
+  < ITEMS > diagram_item_list()
+}
+
+void location_attribute()
+ :
+{
+}
+{
+  < LOCATION > numberPair_value()
+}
+
+void font_attribute()
+ :
+{
+}
+{
+  < FONT > font_object()
+}				   
+
+void numberPair_value()
+ :
+{
+}
+{
+	"(" number_value() "," number_value() ")"
+}
+
+void label_attribute()
+ :
+{
+}
+{
+  < LABEL >
+  (
+    string_value()
+  | LOOKAHEAD(3) itemLabel_object()
+  | LOOKAHEAD(3) segLabel_object()
+  )
+}
+
+void fill_color_attribute()
+ :
+{
+}
+{
+  < FILL_COLOR > number_value()
+}
+
+void nlines_attribute()
+ :
+{
+}
+{
+  < NLINES > number_value()
+}
+
+void justify_attribute()
+ :
+{
+}
+{
+  < JUSTIFY > number_value()
+}
+
+void string_number_pair_value()
+:
+{}
+{
+	"("
+	string_value()
+	number_value()
+	")"
+}
+
+void line_color_attribute()
+:
+{}
+{
+  < LINE_COLOR > number_value()
+}
+
+void documentation_attribute()
+:
+{}
+{
+  < DOCUMENTATION >
+  (
+    string_value()
+  )*
+}
+void stereotype_attribute()
+:
+{}
+{
+  < STEREOTYPE >
+  (
+  string_value()
+  | boolean_value()
+  | LOOKAHEAD(3) itemLabel_object()
+  | LOOKAHEAD(3) segLabel_object()
+  )*
+}
+
+void showcompartmentstereotypes_attribute()
+:
+{}
+{
+  < SHOWCOMPARTMENTSTEREOTYPES > boolean_value()
+}
+
+void suppressOperation_attribute()
+:
+{}
+{
+	< SUPPRESSOPERATION > boolean_value()
+}
+
+void suppressAttribute_attribute()
+:
+{}
+{
+  < SUPPRESSATTRIBUTE > boolean_value()
+}
+
+void includeAttribute_attribute()
+:
+{}
+{
+  < INCLUDEATTRIBUTE > boolean_value()
+}
+
+void showOperationSignature_attribute()
+:
+{}
+{
+  < SHOWOPERATIONSIGNATURE > boolean_value()
+}
+
+void includeOperation_attribute()
+:
+{}
+{
+  < INCLUDEOPERATION > boolean_value()
+}
+
+void icon_attribute()
+:
+{}
+{
+  < ICON > string_value()
+}
+
+void icon_style_attribute()
+:
+{}
+{
+  < ICON_STYLE > string_value()
+}
+
+void anchor_loc_attribute()
+:
+{}
+{
+  < ANCHOR_LOC > number_value()
+}
+
+void anchor_attribute()
+:
+{}
+{
+  < ANCHOR > number_value()
+}
+
+void parent_view_attribute()
+:
+{}
+{
+  < PARENT_VIEW > < REFERENCE >
+}
+
+void roleview_list_attribute()
+:
+{}
+{
+  < ROLEVIEW_LIST > roleviews_list()
+}
+
+void client_attribute()
+:
+{}
+{
+  < CLIENT >
+  (
+    < REFERENCE >
+  | string_value()
+  )
+}
+
+void supplier_attribute()
+:
+{}
+{
+  < SUPPLIER >
+  (
+    < REFERENCE >
+  | string_value()
+  )*
+}
+
+void vertices_attribute()
+:
+{}
+{
+  < VERTICES > points_list()
+}
+
+void line_style_attribute()
+:
+{}
+{
+  < LINE_STYLE > number_value()
+}
+
+void size_attribute()
+:
+{}
+{
+  < SIZE > number_value()
+}
+
+void pctDist_attribute()
+:
+{}
+{
+  < PCTDIST > float_value()
+}
+
+void orientation_attribute()
+:
+{}
+{
+  < ORIENTATION > number_value()
+}
+
+void hidden_attribute()
+:
+{}
+{
+  < HIDDEN > boolean_value()
+}
+
+void roles_attribute() throws Exception
+:
+{}
+{
+  < ROLES > rolelist_list()
+}
+
+void is_principal_attribute()
+:
+{}
+{
+  < IS_PRINCIPAL > boolean_value()
+}
+
+void is_navigable_attribute()
+:
+{}
+{
+  < IS_NAVIGABLE > boolean_value()
+}
+
+void is_aggregate_attribute()
+:
+{}
+{
+  < IS_AGGREGATE > boolean_value()
+}
+
+void constraints_attribute()
+:
+{}
+{
+  < CONSTRAINTS > string_value()
+}
+
+void abstract_attribute()
+:
+{}
+{
+  < ABSTRACT > boolean_value()
+}
+
+void annotation_attribute()
+:
+{}
+{
+  < ANNOTATION > number_value()
+}
+
+void autoResize_attribute()
+:
+{}
+{
+  < AUTORESIZE > boolean_value()
+}
+
+void visible_modules_attribute() throws Exception
+:
+{}
+{
+  < VISIBLE_MODULES > dependency_list()
+}
+
+void value_attribute()
+:
+{}
+{
+  < VALUE >
+  (
+    boolean_value()
+  | string_value()
+  | LOOKAHEAD(2) string_number_pair_value()
+  | LOOKAHEAD(2) "(" < VALUE > < TEXT > string_value() ")"
+  | number_value()
+  | LOOKAHEAD(2) attribute_set_list()
+  )
+}
+
+
+
+void compartment_attribute()
+:
+{}
+{
+  < COMPARTMENT > compartment_object()
+}
+
+void compartmentItems_attribute()
+:
+{}
+{
+  < COMPARTMENTITEMS > compartment_list()
+}
+
+void origin_attachment_attribute()
+:
+{}
+{
+  < ORIGIN_ATTACHMENT > numberPair_value()
+}
+
+void terminal_attachment_attribute()
+:
+{}
+{
+  < TERMINAL_ATTACHMENT > numberPair_value()
+}
+
+void drawSupplier_attribute()
+:
+{}
+{
+  < DRAWSUPPLIER > < REFERENCE >
+}
+
+void client_cardinality_attribute()
+:
+{}
+{
+  < CLIENT_CARDINALITY > "(" < VALUE > < CARDINALITY > string_value() ")"
+}
+
+void superclasses_attribute()
+:
+{}
+{
+  < SUPERCLASSES > 	inheritance_relationship_list()
+}
+
+ArrayList<ExternalDoc> external_docs_attribute()
+:
+{
+  ArrayList<ExternalDoc> al;
+}
+{
+  (
+    < EXTERNAL_DOCS > al = external_doc_list()
+  )
+  {
+    return al;
+  }
+}
+
+void used_nodes_attribute() throws Exception
+:
+{}
+{
+  < USED_NODES > uses_relationship_list()
+}
+
+void statemachine_attribute()
+:
+{}
+{
+  < STATEMACHINE > state_machine_object()
+}  
+
+void states_attribute()
+:
+{}
+{
+  < STATES > states_list()
+}
+
+void partitions_attribute()
+:
+{}
+{
+  < PARTITIONS > partitions_list()
+}
+
+void objects_attribute()
+:
+{}
+{
+  < OBJECTS > objects_list()
+}
+
+void transitions_attribute()
+:
+{}
+{
+  < TRANSITIONS > transition_list()
+}
+
+void statediagrams_attribute()
+:
+{}
+{
+  < STATEDIAGRAMS > stateDiagrams_list()
+}
+
+void type_attribute()
+:
+{}
+{
+  < TYPE > string_value()
+}
+
+void sendEvent_attribute()
+:
+{}
+{
+  < SENDEVENT > sendEvent_object()
+}
+
+void event_attribute()
+:
+{}
+{
+  < EVENT > event_object()
+}
+
+void x_offset_attribute()
+:
+{}
+{
+  < X_OFFSET >
+  (
+    boolean_value()
+  | float_value()
+  ) 
+}
+
+void y_offset_attribute()
+:
+{}
+{
+  < Y_OFFSET >
+  (
+    boolean_value()
+  | float_value()
+  ) 
+}
+
+void operations_attribute()
+:
+{}
+{
+  < OPERATIONS > operations_list()
+}
+
+void concurrency_attribute()
+:
+{}
+{
+  < CONCURRENCY > string_value() 
+}
+
+void opExportControl_attribute()
+:
+{}
+{
+  < OPEXPORTCONTROL > string_value() 
+}
+
+VisibilityKind exportControl_attribute() throws Exception
+:
+{
+  String s;
+}
+{
+  < EXPORTCONTROL > s = string_value()
+  {
+	if(s.compareTo("Public")==0)
+		return VisibilityKind.PUBLIC;
+	if(s.compareTo("Private")==0)
+		return VisibilityKind.PRIVATE;
+	if(s.compareTo("Protected")==0)
+		return VisibilityKind.PROTECTED;
+	if(s.compareTo("Package")==0)
+		return VisibilityKind.PACKAGE;
+	if(s.compareTo("Implementation")==0)
+		return VisibilityKind.PACKAGE;
+	throw new Exception("Unknown VisibilityKind: " + s);
+  } 
+}
+
+void uid_attribute()
+:
+{}
+{
+  < UID > number_value() 
+}
+
+ArrayList<Attribute> class_attributes_attribute() throws Exception
+:
+{
+}
+{
+  < CLASS_ATTRIBUTES > class_attribute_list()
+  {
+	return new ArrayList<Attribute>();
+  }
+}
+
+void global_attribute()
+:
+{}
+{
+  < GLOBAL > boolean_value()
+}
+
+void enforceClosureAutoload_attribute()
+:
+{}
+{
+  < ENFORCECLOSUREAUTOLOAD > boolean_value()
+}
+
+void rightMargin_attribute()
+:
+{}
+{
+  < RIGHTMARGIN > float_value()
+}
+  
+void leftMargin_attribute()
+:
+{}
+{
+ < LEFTMARGIN > float_value()
+}
+ 
+void topMargin_attribute()
+:
+{}
+{
+ < TOPMARGIN  > float_value()
+}
+ 
+void bottomMargin_attribute()
+:
+{}
+{
+ < BOTTOMMARGIN > float_value()
+}
+ 
+void pageOverlap_attribute()
+:
+{}
+{
+ < PAGEOVERLAP > float_value()
+}
+ 
+void clipIconLabels_attribute()
+:
+{}
+{
+ < CLIPICONLABELS > boolean_value()
+}
+ 
+void snapToGrid_attribute()
+:
+{}
+{
+ < SNAPTOGRID > boolean_value()
+}
+ 
+void gridX_attribute()
+:
+{}
+{
+ < GRIDX > number_value()
+}
+ 
+void gridY_attribute()
+:
+{}
+{
+ < GRIDY > number_value()
+}
+ 
+void defaultFont_attribute()
+:
+{}
+{
+ < DEFAULTFONT > font_object()
+}
+ 
+void showMessageNum_attribute()
+:
+{}
+{
+ < SHOWMESSAGENUM > number_value()
+}
+ 
+void showClassOfObject_attribute()
+:
+{}
+{
+ < SHOWCLASSOFOBJECT > boolean_value()
+}
+ 
+void notation_attribute()
+:
+{}
+{
+ < NOTATION > string_value()
+}
+
+void face_attribute()
+:
+{}
+{
+ < FACE > string_value()
+}
+ 
+void bold_attribute()
+:
+{}
+{
+ < BOLD > boolean_value()
+}
+ 
+void italics_attribute()
+:
+{}
+{
+ < ITALICS > boolean_value()
+}
+ 
+void underline_attribute()
+:
+{}
+{
+ < UNDERLINE > boolean_value()
+}
+ 
+void strike_attribute()
+:
+{}
+{
+ < STRIKE > boolean_value()
+}
+ 
+void color_attribute()
+:
+{}
+{
+ < COLOR > number_value()
+}
+ 
+void default_color_attribute()
+:
+{}
+{
+ < DEFAULT_COLOR > boolean_value()
+}
+
+void collaborators_attribute()
+:
+{}
+{
+ < COLLABORATORS > link_list()
+}
+
+void persistence_attribute()
+:
+{}
+{
+ < PERSISTENCE > string_value()
+}
+
+void creationObj_attribute()
+:
+{}
+{
+ < CREATIONOBJ > boolean_value()
+}
+
+void multi_attribute()
+:
+{}
+{
+ < MULTI > boolean_value()
+}
+
+void class_attribute()
+:
+{}
+{
+ < CLASS > string_value()
+}
+
+void messages_attribute()
+:
+{}
+{
+ < MESSAGES > messages_list()
+}
+
+void frequency_attribute()
+:
+{}
+{
+ < FREQUENCY > string_value()
+}
+
+void synchronization_attribute()
+:
+{}
+{
+ < SYNCHRONIZATION > string_value()
+}
+
+void dir_attribute()
+:
+{}
+{
+ < DIR > ( number_value() | string_value() )
+}
+
+void sequence_attribute()
+:
+{}
+{
+ < SEQUENCE > string_value()
+}
+
+void ordinal_attribute()
+:
+{}
+{
+ < ORDINAL > number_value()
+}
+
+void operation_attribute()
+:
+{}
+{
+ < OPERATION >
+  (
+    string_value()
+  ) 
+}
+
+void creation_attribute()
+:
+{}
+{
+ < CREATION > boolean_value()
+}
+
+void mechanism_ref_attribute()
+:
+{}
+{
+ < MECHANISM_REF > < REFERENCE >
+}
+
+void icon_height_attribute()
+:
+{}
+{
+ < ICON_HEIGHT > number_value()
+}
+
+void icon_width_attribute()
+:
+{}
+{
+ < ICON_WIDTH > number_value()
+}
+
+void icon_y_offset_attribute()
+:
+{}
+{
+ < ICON_Y_OFFSET > number_value()
+}
+
+void focus_of_control_attribute()
+:
+{}
+{
+ < FOCUS_OF_CONTROL > focus_of_control_object()
+}
+
+void interObjView_attribute()
+:
+{}
+{
+ < INTEROBJVIEW > < REFERENCE >
+}
+
+void y_coord_attribute()
+:
+{}
+{
+ < Y_COORD > number_value()
+}
+
+void nested_attribute()
+:
+{}
+{
+ < NESTED > boolean_value()
+}
+
+void focus_src_attribute()
+:
+{}
+{
+ < FOCUS_SRC > < REFERENCE >
+}
+
+void focus_entry_attribute()
+:
+{}
+{
+ < FOCUS_ENTRY > < REFERENCE >
+}
+
+void origin_attribute()
+:
+{}
+{
+ < ORIGIN > numberPair_value()
+}
+     	
+void terminus_attribute()
+:
+{}
+{
+ < TERMINUS > numberPair_value()
+}
+
+void condition_attribute()
+:
+{}
+{
+ < CONDITION > string_value()
+}
+
+void action_attribute()
+:
+{}
+{
+ < ACTION > action_object()
+}
+
+void supplier_cardinality_attribute()
+:
+{}
+{
+ < SUPPLIER_CARDINALITY > "(" < VALUE > < CARDINALITY > string_value() ")"
+}
+
+void subobjects_attribute()
+:
+{}
+{
+ < SUBOBJECTS > number_value()
+}
+
+void object_arc_attribute()
+:
+{}
+{
+ < OBJECT_ARC > < REFERENCE >
+}
+
+void realized_interfaces_attribute()
+:
+{}
+{
+ < REALIZED_INTERFACES > realize_rel_list()
+}
+
+void sync_flow_direction_attribute()
+:
+{}
+{
+ < SYNC_FLOW_DIRECTION > number_value()
+}
+
+void sync_is_horizontal_attribute()
+:
+{}
+{
+ < SYNC_IS_HORIZONTAL > boolean_value()
+}
+
+void asssociationClass_attribute()
+:
+{}
+{
+ < ASSOCIATIONCLASS > string_value()
+}
+
+void language_attribute()
+:
+{}
+{
+ < LANGUAGE > string_value()
+}
+
+void supplier_containment_attribute()
+:
+{}
+{
+ < SUPPLIER_CONTAINMENT > string_value()
+}
+
+void client_containment_attribute()
+:
+{}
+{
+ < CLIENT_CONTAINMENT > string_value()
+}
+
+void supplier_visibility_attribute()
+:
+{}
+{
+ < SUPPLIER_VISIBILITY > string_value()
+}
+
+void client_visibility_attribute()
+:
+{}
+{
+ < CLIENT_VISIBILITY > string_value()
+}
+
+void containment_attribute()
+:
+{}
+{
+ < CONTAINMENT > string_value()
+}
+
+void friend_attribute()
+:
+{}
+{
+ < FRIEND > boolean_value()
+}
+
+void parameters_attribute()
+:
+{}
+{
+ < PARAMETERS >
+ (
+   string_value()
+ |
+   parameters_list()
+ )
+}
+
+void rank_attribute()
+:
+{}
+{
+ < RANK > string_value()
+}
+
+void visible_categories_attribute()
+:
+{}
+{
+ < VISIBLE_CATEGORIES > visibility_relationship_list()
+}
+
+void actions_attribute()
+:
+{}
+{
+ < ACTIONS > action_list()
+}
+
+void actionTime_attribute()
+:
+{}
+{
+ < ACTIONTIME > actionTime_object()
+}
+
+void when_attribute()
+:
+{}
+{
+ < WHEN > string_value()
+}
+
+void keys_attribute() throws Exception
+:
+{}
+{
+ < KEYS > class_attribute_list()
+}
+
+void nestedClasses_attribute() throws Exception
+ :
+{}
+{
+  < NESTEDCLASSES > nestedClasses_list() 
+}
+
+void state_attribute()
+ :
+{}
+{
+  < STATE > string_value() 
+}
+
+void quidstate_attribute()
+ :
+{}
+{
+  < QUIDSTATE > string_value() 
+}
+
+void quidflow_attribute()
+ :
+{}
+{
+  < QUIDFLOW > string_value() 
+}
+
+void initv_attribute()
+ :
+{}
+{
+  < INITV > string_value() 
+}
+
+void cardinality_attribute()
+:
+{}
+{
+  < CARDINALITY > "(" < VALUE > < CARDINALITY > string_value() ")"
+}
+
+void result_attribute()
+:
+{}
+{
+  < RESULT > string_value()
+}
+
+void dataFlowView_attribute()
+:
+{}
+{
+  < DATAFLOWVIEW > < REFERENCE >
+}
+
+void messView_attribute()
+:
+{}
+{
+  < MESSVIEW > < REFERENCE >
+}
+
+void derived_attribute()
+:
+{}
+{
+ < DERIVED > boolean_value()
+}
+
+void static_attribute()
+:
+{}
+{
+ < STATIC > boolean_value()
+}
+
+void space_attribute()
+:
+{}
+{
+ < SPACE > string_value()
+}
+
+void exceptions_attribute()
+:
+{}
+{
+ < EXCEPTIONS > string_value()
+}
+
+void pre_condition_attribute()
+:
+{}
+{
+ < PRE_CONDITION > semantic_info_object()
+}
+
+void post_condition_attribute()
+:
+{}
+{
+ < POST_CONDITION > semantic_info_object()
+}
+
+void pdl_attribute()
+:
+{}
+{
+ < PDL > string_value()
+}
+
+void semantics_attribute()
+:
+{}
+{
+ < SEMANTICS > semantic_info_object()
+}
+
+void target_attribute()
+:
+{}
+{
+ < TARGET > string_value()
+}
+
+void diagram_ref_attribute()
+:
+{}
+{
+ < DIAGRAM_REF > string_value()
+}
+
+void association_attribute()
+:
+{}
+{
+ < ASSOCIATION > string_value()
+}
+
+void protocol_attribute()
+:
+{}
+{
+ < PROTOCOL > string_value()
+}
+
+void supplier_is_subsystem_attribute()
+:
+{}
+{
+ < SUPPLIER_IS_SUBSYSTEM > boolean_value()
+}
+
+
+void supplier_is_spec_attribute()
+:
+{}
+{
+ < SUPPLIER_IS_SPEC > boolean_value()
+}
+
+void declarations_attribute()
+:
+{}
+{
+ < DECLARATIONS > string_value()
+}
+
+void category_attribute()
+:
+{}
+{
+  < CATEGORY > string_value()
+}
+
+void procsNDevs_attribute()
+:
+{}
+{
+  < PROCSNDEVS > procsNDevs_list()
+}
+
+
+
+void is_unit_attribute()
+:
+{}
+{
+ < IS_UNIT > boolean_value()
+}
+
+void is_loaded_attribute()
+:
+{}
+{
+ < IS_LOADED > boolean_value()
+}
+
+void file_name_attribute() 
+:
+{ String path; }
+{
+ < FILE_NAME > path=string_value()
+ {
+     path = pathMap.expandPath(path);
+     try
+     {
+	 	 RoseParser parser = new RoseParser(new File(path), configManager);
+         Thread thread = new Thread (parser, path);
+         synchronized(RoseParser.class)
+         {
+	   	   myThreads.add(thread);
+         }
+         thread.start ();
+	 	//parser.run();
+     }
+     catch(FileNotFoundException ex)
+     {
+     	log.severe(ex.getMessage());
+     } 
+     catch(Exception ex)
+     {
+     	log.severe(ex.getMessage());
+     } 
+ }
+}
+
+
